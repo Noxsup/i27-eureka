@@ -17,6 +17,7 @@ pipeline {
             steps{
                 echo "building the ${env.APPLICATION_NAME} application"
                 // maven build should happen here
+                sh "mvn --version"
                 sh "mvn clean package -DskipTests=true"
             }
         }
