@@ -19,6 +19,7 @@ pipeline {
                 // maven build should happen here
                 sh "mvn --version"
                 sh "mvn clean package -DskipTests=true"
+                archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
             }
         }
     }
