@@ -1,4 +1,4 @@
-// testing commit 
+// testing commit
 pipeline {
     agent {
         label 'maven-slave'
