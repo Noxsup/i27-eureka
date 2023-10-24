@@ -59,7 +59,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        echo "Existing JAR Format: ${env.APPLICATION_NAME}- ${env.POM_VERSION}.${env.POM_PACKAGING}"
+                        echo "Existing JAR Format: i27-${env.APPLICATION_NAME}- ${env.POM_VERSION}.${env.POM_PACKAGING}"
+                        echo "*** Below is my expected output"
                         echo "Destination Source is i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING}"
 
                     """
