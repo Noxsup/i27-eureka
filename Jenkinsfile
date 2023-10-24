@@ -47,7 +47,7 @@ pipeline {
                 """
 
                 }
-                timeout (time: 2, unit: 'MINUTES' ) { //NANOSECONDS, MINUTES ....
+                timeout (time: 6, unit: 'MINUTES' ) { //NANOSECONDS, MINUTES ....
                     script {
                         waitForQualityGate abortPipeline: true
                     }
