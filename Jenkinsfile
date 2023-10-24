@@ -65,5 +65,14 @@ pipeline {
                 }
             }
         }
+        stage ('Docker build and push ') {
+            steps {
+                script {
+                    sh """
+                        ls -la
+                    """
+                }
+            }
+        }
     }
 }
