@@ -12,8 +12,8 @@ pipeline {
         APPLICATION_NAME = "eureka"
         SONAR_URL = "http://35.232.164.117:9000"
         SONAR_TOKEN = credentials('sonar_creds')
-        POM_VERSION = readMavenPom{}.getVersion{}
-        POM_PACKAGING = readMavenPom{}.getPackaging{}
+        POM_VERSION = readMavenPom().getVersion()
+        POM_PACKAGING = readMavenPom().getPackaging()
     }
     
     stages{
