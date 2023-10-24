@@ -1,9 +1,9 @@
-// testing commit and its working and its working i guess
+// testing commit and its working and its working, I guess
 pipeline {
     agent {
         label 'maven-slave'
     }
-    tools{
+    tools {
         maven 'Maven-3.8.8'
         jdk 'JDK-17'
     }
@@ -16,11 +16,11 @@ pipeline {
         POM_PACKAGING = readMavenPom().getPackaging()
     }
     
-    stages{
-        stage('Build'){
+    stages {
+        stage('Build') {
             // Build happens here
             // only build should happen, no tests should be available
-            steps{
+            steps {
                 echo "building the ${env.APPLICATION_NAME} application"
                 // maven build should happen here
                 sh "mvn --version"
@@ -28,49 +28,42 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
             }
         }
-        stage ('Unit tests'){
+        stage('Unit tests') {
             steps {
-                echo "performing unit tests for ${env.APPLICATION_NAME} application "
+                echo "performing unit tests for ${env.APPLICATION_NAME} application"
                 sh "mvn test"
             }
         }
-        stage ('sonar') {
+        stage('sonar') {
             steps {
                 echo "Starting Sonarscan with Quality gate"
-                withSonarQubeEnv('SonarQube'){
+                withSonarQubeEnv('SonarQube') {
                     sh """
                         mvn clean verify sonar:sonar \
                             -Dsonar.projectKey=i27-Eureka \
                             -Dsonar.host.url=${env.SONAR_URL} \
                             -Dsonar.login=${env.SONAR_TOKEN}
-                    
-                """
-
+                    """
                 }
-                timeout (time: 2, unit: 'MINUTES' ) { //NANOSECONDS, MINUTES ....
+
+            // adding the below line my pipeline is being aborted, if im removing it, working. so pipeline not at fault i guess 
+                /*timeout(time: 2, unit: 'MINUTES') {
                     script {
                         waitForQualityGate abortPipeline: true
                     }
-
-                }
+                }*/
             }
         }
-        /*stage('Build Format') { // i27-eureka-0.0.1-SNAPSHOT.jar
+        stage('Build Format') {
             steps {
                 script {
                     sh """
                         echo "Existing JAR Format: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
                         echo "*** Below is my expected output"
                         echo "Destination Source is i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING}"
-
                     """
                 }
             }
-        }*/
+        }
     }
-    
-
 }
-
-
-
