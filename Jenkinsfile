@@ -42,7 +42,7 @@ pipeline {
             }
                 timeout (time: 2, unit: 'MINUTES') {
                 script {
-                    waitforQualityGate abortPipeline: true 
+                    waitForQualityGate abortPipeline: true 
                 }
             }
         }
