@@ -76,6 +76,8 @@ pipeline {
                         echo "Listing files in .cicd folder"
                         ls -la ./.cicd
                         sh "ls -la ${workspace}/target"
+                        echo ${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} 
+                        echo ${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING}
 
                         echo " ********* Building Docker Image **********"
                         # docker build -t imagename.
