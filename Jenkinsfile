@@ -75,6 +75,8 @@ pipeline {
                         cp ${workspace}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
                         echo "Listing files in .cicd folder"
                         ls -la ./.cicd
+                        sh "ls -la ${workspace}/target"
+
                         echo " ********* Building Docker Image **********"
                         # docker build -t imagename.
                         docker build --force-rm --no-cache --pull --build-arg JAR_SOURCE=${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} --build-arg JAR_DEST=${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.DOCKER_REPO}:${GIT_COMMIT} ./.cicd
