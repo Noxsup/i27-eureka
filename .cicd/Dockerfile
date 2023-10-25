@@ -4,12 +4,12 @@ ARG JAR_DEST
 ENV JAR_DEST ${JAR_DEST}
 ARG JAR_SOURCE
 ENV JAR_SOURCE ${JAR_SOURCE} 
-RUN echo JAR_SOURCE
+RUN echo "JAR_SOURCE: $JAR_SOURCE"
 # certificates, jks, app.properties 
 RUN mkdir -p /opt/i27
 WORKDIR /opt/i27
 RUN pwd 
-COPY ["${JAR_SOURCE}", "/opt/i27/i27cart-eureka.jar"]
+COPY ["$JAR_SOURCE", "/opt/i27/i27cart-eureka.jar"]
 # JAR_SOURCE will be passed during the docker build command
 RUN chmod 777 /opt/i27
 EXPOSE 8761
