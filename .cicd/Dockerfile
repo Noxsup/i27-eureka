@@ -12,4 +12,7 @@ COPY ["${JAR_SOURCE}", "/opt/i27/i27cart-eureka.jar"]
 RUN chmod 777 /opt/i27
 EXPOSE 8761
 USER root
-CMD ["java", "-jar", "destination/eureka.jar"]
+CMD ["java", "-jar", "/opt/i27/i27cart-eureka.jar"]
+
+# docker run --name eurekacont -p hp:cp
+# docker run --name eurekacont -p ====> hp(dynamic) ====> container (fetching from docker)
