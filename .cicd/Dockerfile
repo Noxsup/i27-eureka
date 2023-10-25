@@ -3,7 +3,7 @@ FROM openjdk:18.0.2.1-jdk
 ARG JAR_DEST
 ENV JAR_DEST ${JAR_DEST}
 ARG JAR_SOURCE
-ARG JAR_SOURCE ${JAR_SOURCE} 
+ENV JAR_SOURCE ${JAR_SOURCE} 
 # certificates, jks, app.properties 
 RUN mkdir -p /opt/i27
 WORKDIR /opt/i27
