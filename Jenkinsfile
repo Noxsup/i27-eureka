@@ -17,7 +17,7 @@ pipeline {
         DOCKER_HUB = "docker.io/sk619"
         DOCKER_REPO = "i27eurekaproject"
         USER_NAME= "sk619" //UserID for DockerHub 
-        DOCKER_CRED = credentials('dockerhub_creds')
+        DOCKER_CREDS = credentials('dockerhub_creds')
        
 
     }
