@@ -86,7 +86,7 @@ pipeline {
                         # Docker hub, Google Container registry, JFROG
                         echo "********************* Logging into Docker Registry*********************  "
                         docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
-                        docker push ${env.DOCKER_HUB}/i27-${env.APPLICATION_NAME}:$GIT_COMMIT
+                        docker push ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT
                         #docker push accountname/reponame:tagname
                     """
                 }
