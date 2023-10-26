@@ -92,5 +92,23 @@ pipeline {
                 }
             }
         }
+        stage ('Deploy to Dev') {
+            steps {
+                echo "******************* Deploying to Dev Environment ***********************"
+                withCredentials([usernamePassword(credentialsId: 'maha_docker_vm_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                    // some block
+                    // with this credentials, i need to connect to dev environment
+                    // sshpass 
+                    script {
+                        sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no '$USERNAME'@$docker_server_ip \"docker pull ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
+                    }
+                }
+               
+                
+            }
+        }
+      
+            
+        
     }
 }
