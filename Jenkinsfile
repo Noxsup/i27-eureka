@@ -53,7 +53,7 @@ pipeline {
     }
     
     stages {
-        stage('Build') {
+        stage('Build') { 
             when {
                 anyOf {
                     expression {
@@ -184,6 +184,11 @@ pipeline {
                 script {
                     dockerDeploy ('Test', '6761', '8761').call()
                 }
+            }
+        }
+        stage ('Clean') {
+            steps { 
+                cleanWs ()
             }
         }
 
