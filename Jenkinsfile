@@ -102,6 +102,18 @@ pipeline {
                     script {
                         sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no '$USERNAME'@$docker_server_ip \"docker pull ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
                         //sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no '$USERNAME'@$docker_server_ip \ "***"
+                        
+                        echo "Stop the Container"
+                        // If we execute the below command it will fail for the first time obviously as containers are not available stop/remove will cause this issue
+                        // we can implement try catch block 
+                        try {
+                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no '$USERNAME'@$docker_server_ip \"docker stop --name ${env.APPLICATION_NAME}-dev"
+                            echo " Removing the Container "
+                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no '$USERNAME'@$docker_server_ip \"docker rm --name ${env.APPLICATION_NAME}-dev"
+
+                        } catch (err) {
+                            echo "Caught the error : $err"
+                        }
                         // Run the container 
                         sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no '$USERNAME'@$docker_server_ip \"docker run --restart always --name ${env.APPLICATION_NAME}-dev -p 5761:8761 ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
 
