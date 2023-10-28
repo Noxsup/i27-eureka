@@ -65,11 +65,9 @@ pipeline {
             // Build happens here
             // only build should happen, no tests should be available
             steps {
-                echo "building the ${env.APPLICATION_NAME} application"
-                // maven build should happen here
-                sh "mvn --version"
-                sh "mvn clean package -DskipTests=true"
-                archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
+                script {
+                    buildApp().call()
+                }
             }
         }
         stage('Unit tests') {
@@ -137,21 +135,7 @@ pipeline {
             
             steps {
                 script {
-                    sh """
-                        ls -la
-                        cp ${workspace}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
-                        echo "Listing files in .cicd folder"
-                        ls -la ./.cicd
-                        echo " ********* Building Docker Image **********"
-                        # docker build -t imagename.
-                        docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} --build-arg JAR_DEST=i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT ./.cicd
-                        # push repo 
-                        # Docker hub, Google Container registry, JFROG
-                        echo "********************* Logging into Docker Registry*********************  "
-                        docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
-                        docker push ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT
-                        #docker push accountname/reponame:tagname
-                    """
+                    dockerBuildandPush().call()
                 }
             }
         }
@@ -165,6 +149,7 @@ pipeline {
             }
             steps {
                script {
+                imageValidation().call()
                 dockerDeploy('dev', '5761', '8761').call()
                }
                
@@ -228,6 +213,56 @@ def dockerDeploy(envDeploy, hostPort, contPort ) {
                 } 
         }
 
+    }
+}
+
+def buildApp(){
+    return {
+        echo "building the ${env.APPLICATION_NAME} application"
+         // maven build should happen here
+        sh "mvn --version"
+        sh "mvn clean package -DskipTests=true"
+        archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
+    }
+}
+
+def imageValidation(){
+    return{
+        println("Pulling the docker image")
+        try {
+            sh "docker pull ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT"
+            println("Pull Success, !!!! Deploying !!!!")
+        }
+        catch (Exception e) {
+            
+
+            println("OOPS, Docker image with this tag aint available")
+            println("So, Building the app, creating the image and pushing to registry")
+
+            buildApp().call()
+            dockerBuildandPush().call()
+
+        }
+
+
+    }
+}
+
+def dockerBuildandPush(){
+    return {
+        ls -la
+        cp ${workspace}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
+        echo "Listing files in .cicd folder"
+        ls -la ./.cicd
+        echo " ********* Building Docker Image **********"
+        # docker build -t imagename.
+        docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} --build-arg JAR_DEST=i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT ./.cicd
+        # push repo 
+        # Docker hub, Google Container registry, JFROG
+        echo "********************* Logging into Docker Registry*********************  "
+        docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+        docker push ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT
+        #docker push accountname/reponame:tagname
     }
 }
 
