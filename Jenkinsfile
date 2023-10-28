@@ -190,9 +190,14 @@ pipeline {
         }
         stage ('Deploy to Prod') {
             when {
-                anyOf {
-                    expression {
-                        params.DeployToProd == 'yes'
+                allOf {
+                    anyOf {
+                        expression {
+                            params.DeployToProd == 'yes'
+                        }
+                    }
+                    anyOf {
+                        branch 'release/*'
                     }
                 }
             }
