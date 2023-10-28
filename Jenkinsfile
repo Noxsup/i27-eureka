@@ -52,7 +52,7 @@ pipeline {
 
     }
     
-    stages {
+    stages { 
         stage('Build') { 
             when {
                 anyOf {
@@ -167,7 +167,40 @@ pipeline {
             
             steps {
                 script {
+                    imageValidation().call()
                     dockerDeploy ('Test', '6761', '8761').call()
+                }
+            }
+        }
+        stage ('Deploy to Stage') {
+            when {
+                anyOf {
+                    expression {
+                        params.DeployToStage == 'yes'
+                    }
+                }
+            }
+            
+            steps {
+                script {
+                    imageValidation().call()
+                    dockerDeploy ('Stage', '7761', '8761').call()
+                }
+            }
+        }
+        stage ('Deploy to Prod') {
+            when {
+                anyOf {
+                    expression {
+                        params.DeployToProd == 'yes'
+                    }
+                }
+            }
+            
+            steps {
+                script {
+                    imageValidation().call()
+                    dockerDeploy ('Prod', '8761', '8761').call()
                 }
             }
         }
