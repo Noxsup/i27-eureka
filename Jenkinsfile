@@ -314,3 +314,6 @@ def dockerBuildandPush(){
 // test ===> 6761
 // stage ===> 7761
 // prod ===> 8761
+
+/* ALWAYS USE t2.small or medium FOR THE DOCKER-DEV (DEPLOYEMENT SERVER) AS A MICRO INSTANCE 
+CAN NOT BE USED FOR DEPLOYEMENT */
